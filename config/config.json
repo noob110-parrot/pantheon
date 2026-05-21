@@ -1,0 +1,17 @@
+{
+  "project_name": "Pantheon",
+  "version": "3.0",
+  "theme": "dragon",
+
+  "single_active_model": true,
+
+  "resident_small_model": false,
+
+  "load_on_demand": true,
+
+  "idle_unload_minutes": 10,
+
+  "l1_cache_mb": 64,
+  "l2_cache_mb": 256,
+  "l3_cache_gb": 2
+}

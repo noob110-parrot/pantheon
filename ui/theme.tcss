@@ -70,6 +70,11 @@ Screen {
     min-height: 10;
 }
 
+#core-panel {
+    height: 18;
+    min-height: 16;
+}
+
 #network-panel {
     height: auto;
 }

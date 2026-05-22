@@ -25,6 +25,7 @@ from ui.art import (
     stat_row,
     terminal_banner,
 )
+from ui.core_panel import PantheonCorePanel
 from ui.deps import DisplayState, UIDependencies
 from ui.tab_panels import (
     DEMO_MEMORIES,
@@ -370,6 +371,7 @@ class RightRail(Vertical):
         self.deps = deps
 
     def compose(self) -> ComposeResult:
+        yield PantheonCorePanel(logger=self.deps.logger, classes="panel-box", id="core-panel")
         self.feed = ActivityFeed(logger=self.deps.logger)
         yield self.feed
         yield RecentMemoriesPanel(classes="panel-box")

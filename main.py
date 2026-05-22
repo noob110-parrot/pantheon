@@ -1,7 +1,12 @@
-from rich.console import Console
+import path_setup  # noqa: F401
 
-console = Console()
+from config.settings import load_config
+from ui.terminal_ui import run
 
-console.print("[cyan]PANTHEON v3.0[/cyan]")
-console.print("[green]Architecture Harmonized[/green]")
 
+def main() -> None:
+    run(load_config())
+
+
+if __name__ == "__main__":
+    main()

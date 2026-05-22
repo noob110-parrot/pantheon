@@ -1,0 +1,224 @@
+/* Pantheon — Cyberpunk Military Command Center */
+
+Screen {
+    background: #060d18;
+    color: #5ce1e6;
+}
+
+/* ── Header ── */
+#top-header {
+    height: 7;
+    background: #08111f;
+    border-bottom: solid #1a6b7a;
+    layout: horizontal;
+}
+
+#header-left {
+    width: 28%;
+    padding: 0 1;
+    content-align: left middle;
+}
+
+#header-center {
+    width: 44%;
+    padding: 0 1;
+    content-align: center middle;
+}
+
+#header-right {
+    width: 28%;
+    padding: 0 1;
+    content-align: right middle;
+}
+
+/* ── Main layout ── */
+#main-row {
+    height: 1fr;
+}
+
+#left-rail {
+    width: 23%;
+    background: #08111f;
+    border-right: solid #1a6b7a;
+    padding: 0 1;
+}
+
+#center-rail {
+    width: 51%;
+    background: #060d18;
+    padding: 0 1;
+}
+
+#right-rail {
+    width: 26%;
+    background: #08111f;
+    border-left: solid #1a6b7a;
+    padding: 0 1;
+}
+
+/* ── Panels ── */
+.panel-box {
+    border: solid #1a6b7a;
+    background: #08111f;
+    padding: 0 1;
+    margin-bottom: 1;
+    height: auto;
+}
+
+#activity-feed {
+    height: 1fr;
+    min-height: 10;
+}
+
+#network-panel {
+    height: auto;
+}
+
+/* ── Workspace tabs ── */
+#center-workspace {
+    height: 1fr;
+}
+
+#workspace-tabs {
+    height: 1fr;
+    border: solid #2a8f9e;
+    background: #060d18;
+}
+
+TabbedContent {
+    background: #060d18;
+}
+
+TabbedContent > ContentSwitcher {
+    height: 1fr;
+}
+
+TabPane {
+    padding: 0 1;
+    background: #060d18;
+}
+
+TabbedContent Tab {
+    background: #08111f;
+    color: #2a8f9e;
+    padding: 0 2;
+}
+
+TabbedContent Tab.-active {
+    background: #0d1f30;
+    color: #00d9ff;
+    text-style: bold;
+    border-bottom: solid #5ce1e6;
+}
+
+.tab-panel {
+    height: 1fr;
+    background: #060d18;
+    border: solid #1a6b7a;
+    padding: 0 1;
+}
+
+#terminal-log {
+    height: 1fr;
+    background: #060d18;
+    border: solid #1a6b7a;
+    padding: 0 1;
+    scrollbar-color: #2a8f9e;
+    scrollbar-background: #08111f;
+}
+
+/* ── Gauges ── */
+ProgressBar {
+    width: 100%;
+    height: 1;
+}
+
+ProgressBar Bar {
+    color: #5ce1e6;
+    background: #0d1f30;
+}
+
+ProgressBar PercentageStatus {
+    color: #00d9ff;
+    text-style: bold;
+}
+
+.gauge-label {
+    height: 1;
+    color: #2a8f9e;
+    text-style: bold;
+}
+
+Sparkline {
+    height: 2;
+    margin-bottom: 1;
+}
+
+Sparkline > .sparkline--max_color {
+    color: #ff4477;
+}
+
+Sparkline > .sparkline--min_color {
+    color: #5ce1e6;
+}
+
+/* ── Command input ── */
+#command-row {
+    height: 3;
+    layout: horizontal;
+    margin: 0 1;
+    background: #08111f;
+    border: solid #2a8f9e;
+}
+
+#command-prompt {
+    width: 3;
+    content-align: center middle;
+    color: #00d9ff;
+}
+
+#command-input {
+    width: 1fr;
+    border: none;
+    background: #08111f;
+    color: #5ce1e6;
+    padding: 0 1;
+}
+
+#command-input:focus {
+    background: #0d1f30;
+    border: none;
+}
+
+#enter-hint {
+    width: 8;
+    content-align: center middle;
+    color: #2a8f9e;
+    border-left: solid #1a6b7a;
+}
+
+/* ── Footer ── */
+#shortcut-footer {
+    height: 3;
+    layout: horizontal;
+    background: #08111f;
+    border-top: solid #1a6b7a;
+    padding: 0 1;
+}
+
+#footer-shortcuts {
+    width: 1fr;
+    content-align: left middle;
+    color: #2a8f9e;
+}
+
+#footer-tagline {
+    width: auto;
+    content-align: right middle;
+    color: #2a8f9e;
+}
+
+ScrollableContainer {
+    scrollbar-color: #2a8f9e;
+    scrollbar-background: #08111f;
+}

@@ -4,6 +4,63 @@
       "version": "3.0-fixed",
       "status": "Architecture Hardened"
     },
+    "development_phases": {
+      "last_modified": "2026-05-22",
+      "next_phase": "phase_3_wal_skeleton",
+      "phases": [
+        {
+          "id": "phase_0_foundation",
+          "name": "UI, config, structured logging",
+          "status": "done",
+          "dependencies_complete": true
+        },
+        {
+          "id": "phase_1_execution_shell",
+          "name": "Router, input normalizer, logger, model policy",
+          "status": "done",
+          "dependencies_complete": true
+        },
+        {
+          "id": "phase_2_tier0_fast_path",
+          "name": "Tier-0 fast path (regex/templates, AppleScript, allowlisted shell)",
+          "status": "done",
+          "dependencies_complete": true,
+          "plan_refs": [
+            "conflict_resolution.parser_implementation.tier0_fast_path"
+          ]
+        },
+        {
+          "id": "phase_3_wal_skeleton",
+          "name": "Write-ahead log skeleton (transaction_management.write_ahead_log)",
+          "status": "pending",
+          "dependencies_complete": true,
+          "plan_refs": [
+            "critical_fixes.transaction_management.write_ahead_log"
+          ]
+        },
+        {
+          "id": "phase_4_mvcc_shadow",
+          "name": "MVCC shadow mode",
+          "status": "pending",
+          "dependencies_complete": false,
+          "blocked_by": ["phase_3_wal_skeleton"]
+        },
+        {
+          "id": "phase_5_memory_graph",
+          "name": "SQLite + NetworkX + FAISS memory layer",
+          "status": "pending",
+          "dependencies_complete": false,
+          "blocked_by": ["phase_3_wal_skeleton"]
+        },
+        {
+          "id": "phase_6_model_inference",
+          "name": "Wire ModelManager + streaming LLM for ask",
+          "status": "pending",
+          "dependencies_complete": true,
+          "blocked_by": []
+        }
+      ]
+    },
     "critical_fixes": {
       "concurrency_model": {
         "global_lock_order": [

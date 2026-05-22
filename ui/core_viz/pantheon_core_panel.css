@@ -1,0 +1,120 @@
+:root {
+  --pantheon-primary: #00ffff;
+  --pantheon-secondary: #00aaff;
+  --pantheon-accent: #ffffff;
+  --pantheon-background: #000000;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--pantheon-background);
+  color: var(--pantheon-primary);
+  font-family: "Courier New", "IBM Plex Mono", monospace;
+}
+
+.pantheon-page {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 170, 255, 0.15) 0%, rgba(0, 0, 0, 0.95) 45%, #000 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0));
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.pantheon-header,
+.pantheon-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 170, 255, 0.42);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.pantheon-footer {
+  border-bottom: none;
+  border-top: 1px solid rgba(0, 170, 255, 0.42);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.pantheon-badge {
+  color: var(--pantheon-accent);
+}
+
+#pantheon-core-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 380px;
+  overflow: hidden;
+}
+
+.pantheon-core-shell {
+  position: absolute;
+  inset: 0;
+}
+
+.pantheon-core-gl,
+.pantheon-core-overlay,
+.pantheon-core-svg,
+.pantheon-core-unicode {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pantheon-core-overlay {
+  mix-blend-mode: screen;
+  opacity: 0.96;
+  animation: holo-flicker 6s infinite steps(2, end);
+}
+
+.pantheon-core-svg {
+  display: block;
+}
+
+.pantheon-core-unicode {
+  display: grid;
+  place-items: center;
+  color: var(--pantheon-primary);
+  background: #000;
+  margin: 0;
+  font-size: clamp(12px, 2.2vw, 18px);
+  letter-spacing: 0.1em;
+}
+
+.scanline-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.05) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  opacity: 0.08;
+  animation: scan-shift 9s linear infinite;
+}
+
+@keyframes holo-flicker {
+  0% { opacity: 0.96; }
+  7% { opacity: 0.93; }
+  30% { opacity: 0.97; }
+  52% { opacity: 0.95; }
+  74% { opacity: 0.98; }
+  100% { opacity: 0.96; }
+}
+
+@keyframes scan-shift {
+  from { transform: translateY(0); }
+  to { transform: translateY(4px); }
+}

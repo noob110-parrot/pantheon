@@ -1,0 +1,10 @@
+[project]
+name = "pantheon"
+version = "3.0.0"
+
+dependencies = [
+    "textual",
+    "rich",
+    "psutil",
+    "pydantic"
+]

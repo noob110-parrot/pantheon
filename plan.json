@@ -1,0 +1,420 @@
+{
+    "project": {
+      "name": "Pantheon",
+      "version": "3.0-fixed",
+      "status": "Architecture Hardened"
+    },
+    "critical_fixes": {
+      "concurrency_model": {
+        "global_lock_order": [
+          "cache_metadata",
+          "knowledge_graph",
+          "capsule_store",
+          "embeddings",
+          "model_loader"
+        ],
+        "lock_timeout_ms": 5000,
+        "deadlock_detection": {
+          "enabled": true,
+          "algorithm": "wait_for_graph",
+          "check_interval_ms": 1000,
+          "resolution_policy": "abort_youngest_transaction"
+        },
+        "atomic_operations": {
+          "access_count": "compare_and_swap",
+          "importance_updates": "atomic_add",
+          "timestamp_updates": "atomic_store"
+        },
+        "read_write_locks": {
+          "capsules": "rwlock",
+          "knowledge_graph": "rwlock",
+          "cache": "rwlock",
+          "embeddings": "rwlock"
+        }
+      },
+      "memory_consistency": {
+        "mvcc": {
+          "enabled": true,
+          "isolation_level": "snapshot",
+          "garbage_collection": "reference_counting",
+          "max_version_age_seconds": 300
+        },
+        "copy_on_write": {
+          "cache_entries": true,
+          "capsules_during_compression": true,
+          "graph_during_merge": true
+        },
+        "reference_counting": {
+          "enabled": true,
+          "grace_period_ms": 1000,
+          "automatic_cleanup": true
+        }
+      },
+      "transaction_management": {
+        "acid_compliance": true,
+        "write_ahead_log": {
+          "enabled": true,
+          "path": "pantheon_data/wal",
+          "sync_mode": "fsync",
+          "checkpoint_interval_seconds": 60
+        },
+        "transaction_boundaries": [
+          "capsule_creation_with_embedding",
+          "graph_node_update",
+          "memory_compression",
+          "dag_checkpoint"
+        ],
+        "two_phase_commit": {
+          "enabled": false,
+          "future_distributed_support": true
+        },
+        "referential_integrity": {
+          "foreign_key_checks": true,
+          "cascade_operations": {
+            "delete": "cascade",
+            "update": "cascade"
+          },
+          "orphan_detection": {
+            "enabled": true,
+            "check_interval_hours": 24,
+            "auto_cleanup": true
+          }
+        }
+      }
+    },
+    "latency_optimizations": {
+      "model_management_v2": {
+        "resident_small_model": false,
+        "small_model_ram_mb": 512,
+        "inference_only_one_active": true,
+        "loaded_models_max": 2,
+        "preloading": {
+          "enabled": true,
+          "predict_next_model": true,
+          "lookahead_queries": 3,
+          "preload_threshold": 0.7
+        },
+        "lazy_unload": {
+          "small_model_minutes": 120,
+          "other_models_minutes": 10
+        },
+        "load_on_demand": true
+      },
+      "parallel_retrieval": {
+        "enabled": true,
+        "concurrent_layers": [
+          "metadata",
+          "knowledge_graph",
+          "meta_capsules",
+          "capsules"
+        ],
+        "sequential_layers": [
+          "vector_search",
+          "raw_conversations"
+        ],
+        "timeout_per_layer_ms": 500,
+        "fail_fast_on_timeout": false,
+        "merge_strategy": "union_deduplicate"
+      },
+      "cache_hierarchy": {
+        "l1_hot_ram_mb": 64,
+        "l2_warm_ram_mb": 256,
+        "l3_disk_cache_gb": 2,
+        "hot_cache_items": [
+          "current_session_context",
+          "recent_10_capsules",
+          "active_graph_neighborhood",
+          "model_prompt_templates"
+        ],
+        "warm_cache_items": [
+          "recent_100_capsules",
+          "frequent_graph_nodes",
+          "session_embeddings"
+        ],
+        "strategy": {
+          "l1": "importance_weighted_lfu",
+          "l2": "lfu_then_lru",
+          "l3": "lru_only"
+        },
+        "zero_copy": {
+          "enabled": true,
+          "use_mmap": true,
+          "reference_based_access": true
+        }
+      },
+      "vector_search_optimization": {
+        "index_type": "IVF_PQ",
+        "partitions": 128,
+        "quantization": "product_quantizer_8bit",
+        "compression_ratio": 32,
+        "approximate_search": true,
+        "early_termination": true,
+        "nprobe": 8,
+        "rerank_top_k": 20
+      }
+    },
+    "resource_efficiency": {
+      "storage_lifecycle": {
+        "raw_conversations": {
+          "retention_days": 90,
+          "compress_after_days": 7,
+          "delete_after_compression": true,
+          "exception": "flagged_important"
+        },
+        "summaries": {
+          "retention_days": 180,
+          "merge_to_capsules_after_days": 30,
+          "delete_after_merge": true
+        },
+        "capsules": {
+          "permanent": true,
+          "compress_stale_after_days": 180,
+          "move_to_cold_storage_after_days": 365
+        },
+        "meta_capsules": {
+          "permanent": true,
+          "merge_after_count": 50
+        },
+        "knowledge_graph": {
+          "permanent": true,
+          "compress_stale_nodes_after_days": 180,
+          "merge_duplicate_nodes": true
+        }
+      },
+      "deduplication": {
+        "enabled": true,
+        "content_addressing": {
+          "hash_function": "blake3",
+          "index_all_content": true
+        },
+        "merge_policies": {
+          "identical_facts": "merge_and_increase_confidence",
+          "similar_facts": "link_in_graph",
+          "contradictory_facts": "flag_for_review"
+        },
+        "single_source_of_truth": {
+          "canonical_store": "knowledge_graph",
+          "other_stores_reference": true
+        }
+      },
+      "compression": {
+        "background_jobs": true,
+        "priority": "low",
+        "rate_limit_per_minute": 10,
+        "batch_size": 100,
+        "use_model_tier": "tier2_small"
+      }
+    },
+    "recovery_hardening": {
+      "checkpoint_v2": {
+        "granular_tracking": true,
+        "schema": {
+          "dag_id": "string",
+          "timestamp": "timestamp",
+          "completed_nodes": [],
+          "partial_nodes": [
+            {
+              "node_id": "string",
+              "progress_percent": "integer",
+              "progress_metadata": {},
+              "idempotency_token": "string",
+              "can_resume": "boolean"
+            }
+          ],
+          "failed_nodes": [],
+          "checksum": "blake3_hash"
+        },
+        "atomic_writes": {
+          "temp_file_pattern": "checkpoint.{dag_id}.tmp",
+          "fsync_before_rename": true,
+          "verify_after_write": true
+        },
+        "frequency": {
+          "after_each_node": true,
+          "after_n_seconds": 30
+        }
+      },
+      "idempotency": {
+        "required_for_all_tools": true,
+        "token_generation": "uuid_v4",
+        "token_storage": "persistent",
+        "deduplication_window_hours": 24
+      },
+      "recovery_strategies": {
+        "forward_recovery": {
+          "enabled": true,
+          "replay_wal": true,
+          "resume_partial_nodes": true
+        },
+        "backward_recovery": {
+          "enabled": true,
+          "rollback_to_checkpoint": true,
+          "undo_partial_operations": true
+        },
+        "point_in_time_restore": {
+          "enabled": true,
+          "snapshot_interval_hours": 6,
+          "retention_days": 30
+        }
+      },
+      "failure_detection": {
+        "health_checks": {
+          "interval_seconds": 10,
+          "timeout_seconds": 5,
+          "components": [
+            "model_loader",
+            "memory_store",
+            "cache",
+            "knowledge_graph",
+            "embeddings"
+          ]
+        },
+        "automatic_recovery": {
+          "enabled": true,
+          "max_retry_attempts": 3,
+          "exponential_backoff": true,
+          "circuit_breaker": {
+            "enabled": true,
+            "failure_threshold": 5,
+            "timeout_seconds": 60
+          }
+        }
+      }
+    },
+    "conflict_resolution": {
+      "parser_implementation": {
+        "tier0_fast_path": {
+          "type": "regex_and_templates",
+          "llm_required": false,
+          "latency_target_ms": 50
+        },
+        "tier1_simple": {
+          "type": "rule_based_parser",
+          "llm_required": false,
+          "latency_target_ms": 100
+        },
+        "tier2_plus": {
+          "type": "model_based_nlu",
+          "model": "small_model",
+          "llm_required": true,
+          "latency_target_ms": 500
+        }
+      },
+      "cache_policy_v2": {
+        "remove_copies_only": true,
+        "use_references": true,
+        "pin_active_items": true,
+        "zero_copy_reads": true,
+        "copy_on_write": true,
+        "reference_counting": true
+      },
+      "model_loading_clarification": {
+        "single_active_inference_thread": true,
+        "multiple_models_in_ram": true,
+        "max_loaded_models": 2,
+        "speculative_preloading": {
+          "load_to_ram": true,
+          "defer_inference_init": true,
+          "warm_kv_cache": false
+        }
+      }
+    },
+    "monitoring_and_metrics": {
+      "deadlock_detection": {
+        "log_wait_chains": true,
+        "alert_on_timeout": true,
+        "abort_on_cycle": true
+      },
+      "latency_tracking": {
+        "per_component": true,
+        "percentiles": [
+          50,
+          90,
+          95,
+          99
+        ],
+        "alert_thresholds": {
+          "p99_simple_task_ms": 1000,
+          "p99_tool_task_ms": 2000,
+          "p99_llm_task_ms": 5000
+        }
+      },
+      "cache_metrics": {
+        "hit_rate": true,
+        "eviction_rate": true,
+        "memory_pressure": true,
+        "target_hit_rate": 0.8
+      },
+      "transaction_metrics": {
+        "commit_rate": true,
+        "abort_rate": true,
+        "conflict_rate": true,
+        "target_abort_rate": 0.01
+      }
+    },
+    "testing_requirements": {
+      "concurrency_tests": [
+        "race_condition_fuzzing",
+        "deadlock_scenario_testing",
+        "lock_ordering_validation",
+        "concurrent_read_write_stress"
+      ],
+      "recovery_tests": [
+        "crash_recovery_all_points",
+        "checkpoint_corruption_handling",
+        "partial_transaction_rollback",
+        "wal_replay_correctness"
+      ],
+      "performance_tests": [
+        "cold_start_latency",
+        "hot_path_latency",
+        "cache_hit_rate_under_load",
+        "model_swap_overhead"
+      ],
+      "integration_tests": [
+        "end_to_end_task_execution",
+        "multi_dag_interference",
+        "memory_compression_pipeline",
+        "graph_consistency_checks"
+      ]
+    },
+    "migration_path": {
+      "version_2_to_3": {
+        "backward_compatible": true,
+        "migration_steps": [
+          "enable_mvcc_in_shadow_mode",
+          "add_wal_without_enforcing",
+          "migrate_cache_to_reference_based",
+          "enable_transaction_boundaries",
+          "switch_checkpoint_format",
+          "enable_enforcement_mode"
+        ],
+        "rollback_plan": {
+          "available": true,
+          "max_rollback_window_days": 7
+        }
+      }
+    },
+    "notes": {
+      "breaking_changes": [
+        "Cache policy changed from copies to references",
+        "Checkpoint format v2 (incompatible with v1)",
+        "Transaction boundaries enforce atomicity",
+        "Model loading behavior different (keep small resident)"
+      ],
+      "performance_expectations": {
+        "cold_start_improvement": "60% reduction (15s \u2192 6s)",
+        "cache_hit_rate_improvement": "4x (20% \u2192 80%)",
+        "concurrent_throughput": "3x increase",
+        "storage_growth_rate": "70% reduction"
+      },
+      "mission_alignment": {
+        "local_first": "\u2713 Maintained",
+        "terminal_first": "\u2713 Maintained",
+        "maximum_capability_per_compute": "\u2713 Improved",
+        "resource_optimized": "\u2713 Significantly improved",
+        "tool_first_execution": "\u2713 Maintained",
+        "persistent_memory": "\u2713 Enhanced with integrity guarantees"
+      }
+    }
+  }

@@ -1,17 +1,58 @@
 {
   "project_name": "Pantheon",
   "version": "3.0",
+
   "theme": "dragon",
 
   "single_active_model": true,
-
   "resident_small_model": false,
-
   "load_on_demand": true,
-
   "idle_unload_minutes": 10,
 
   "l1_cache_mb": 64,
   "l2_cache_mb": 256,
-  "l3_cache_gb": 2
+  "l3_cache_gb": 2,
+
+  "structured_logging": {
+    "enabled": true,
+    "json_logs": true
+  },
+
+  "request_tracking": {
+    "enabled": true
+  },
+
+  "confidence_thresholds": {
+    "auto_execute": 0.85,
+    "ask_user": 0.50,
+    "reject": 0.30
+  },
+
+  "memory_provenance": {
+    "enabled": true
+  },
+
+  "tool_permissions": {
+    "filesystem": {
+      "read": true,
+      "write": false
+    },
+
+    "terminal_allowlist": [
+      "pwd",
+      "ls",
+      "git status"
+    ],
+
+    "network": {
+      "outbound": true
+    }
+  },
+
+  "future_distributed_support": true,
+  "two_phase_commit": false,
+
+  "reference_counting": true,
+  "copy_on_write": true,
+  "zero_copy_mmap": true
 }
